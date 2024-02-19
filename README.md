@@ -1,4 +1,4 @@
-# Renaissance Faire Data Analysis Project
+
 
 |Section|Subsections|
 |---|---|
@@ -18,11 +18,11 @@ Popularity of a theater release, indicated as tickets sold, can be used to predi
 Focusing on specific Disney movies, DC, Marvel, Star Wars, Lord of the Rings movies, we collect all the domestic box office revenue and the release dates. We use the release dates to find the average ticket price per year. Next, we divide revenue by average ticket price to get tickets sold for that movie. We also get normalization data by dividing the tickets sold for the movie by the tickets sold that year. This is to account for any economic limitations. Both are then compared to the observations of cosplay counts in 2023.
 
 #### Results:
-![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)  
+![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)
 The tickets sold were summed across franchises. The correlation coefficient between these is 0.32.  
 
-![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg)  
-The normalization values were summed across franchises. The correlation coefficient between these is 0.62.  
+![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg).
+The normalization values were summed across franchises. The correlation coefficient between these is 0.61.  
 
 ### Project 2:
 #### Hypothesis:
@@ -53,8 +53,6 @@ The normalization values were summed across franchises. The correlation coeffici
 |Media Source| The franchise from which the character came|
 |Gender| Observed gender of the character|
 |Year| For all this data, it's just 2023. I hoped in the future if I visit during this week, I might add more observations|
-
-
 &nbsp;&nbsp;The script to form the csv from the observations is file `RenFaireSuperheroes.py`, which creates the csv `RenFaireObservations.csv`
 &nbsp;&nbsp;The Observation data contains more data than what was ultimately used. I decided to only examine movie theater data, to ensure the scope of the project wouldn't be too big, and because expanding to video games, TV shows, and streaming would make it much harder to find a common metric to use as the definition of popularity.
 &nbsp;&nbsp;The franchises I observed were Star Wars, Disney (Robin Hood, Shrek, Hercules), Marvel, DC, My Hero Academia, Legend of Zelda, Genshin Impact, Lord of the Rings, Princess Bride
@@ -73,28 +71,27 @@ Failings of this approach include the inability to account for cult classics, do
 | opening_box_office | opening weekend box office revenue. This information isn't necessarily domestic|
 | domestic_box_office | box office revenue the film made during its initial run in theaters, domestically|
 |franchise| the franchise it belongs too from the list: DC, Disney, Marvel, LOTR, Star Wars|
-
 &nbsp;&nbsp;Data Source:https://www.boxofficemojo.com/
 
 
 ### Ticket Data
-&nbsp;&nbsp;Because I chose to use tickets sold as the metric for popularity[insert link to justification], I also needed a dataset with ticket prices to help calculate the tickets sold per movie.
+&nbsp;&nbsp;Because I chose to use tickets sold as the metric for [popularity](#Defining-Popularity-for-Analysis), I also needed a dataset with ticket prices to help calculate the tickets sold per movie.
 &nbsp;&nbsp;The dataset has the following columns;
 |Column Name| Description|
 |---|---|
 |Year| year|
 |Tickets Sold| total tickets sold that year|
 |Total Box Office| Box Office revenue for that year|
-|Total Inflation Adjusted Box Office| Box office revenue for the year, adjusted for inflation|
 |Avg. Ticket Price| Average price of tickets that year, not accounted for inflation|
-
 Our first dataset only had information as early as 1995, but we needed information as early as 1970.
 &nbsp;&nbsp;All data reflects domestic box office numbers.
 &nbsp;&nbsp;Data Sources:
 - https://www.the- numbers.com/market/ (yielded the 1995- 2023 information)
 - https://finance.yahoo.com/news/cost- movie- ticket- were- born- 155153039.html (yielded the - 1994 average ticket prices)
 - https://www.boxofficemojo.com/year/?ref_=bo_nb_hm_secondarytab (1977- - 1994 Total Box Office revenue)
-- To fill in the blanks, I was able to calculate total tickets sold that year by dividing total box office revenue by average ticket price.
+- A linear regression model was used to find the remaining missing Total Box Office Revenue.
+- To fill in the missing Total Tickets Sold, I was able to calculate total tickets sold that year by dividing total box office revenue by average ticket price.
+`tickets.py` is the file showing the steps taken to go from the initial dataset obtained from the Numbers.com to the dataset we ultimately used in our analysis. Additionally, `tickets.csv` is the original dataset, `tickets_1.csv` is the intermediary, before we did the linear regression, and `tickets_final.csv` is the final result that I used in my analysis.
 
 
 ## Analysis + Methods
@@ -134,9 +131,9 @@ Now that the datasets are ready, I can start doing the comparisons to see if the
 
 ## Results
 &nbsp;&nbsp;I made bar graphs of the general data distributions, so we could examine visually if they seem to compare.
-![Bar graph indicating tickets sold across franchises](/Supporting%20Files/graphs/Tickets_Sold_Bar.svg)  
-![Bar graph indicating tickets sold across franchises, with tickets sold normalized by year](/Supporting%20Files/graphs/Tickets_Sold_Bar_Normal.svg)  
-![Bar graph showing cosplay observations by franchise](/Supporting%20Files/graphs/Ren_Faire_Observations_Bar.svg)  
+![Bar graph indicating tickets sold across franchises](/Supporting%20Files/graphs/Tickets_Sold_Bar.svg)
+![Bar graph indicating tickets sold across franchises, with tickets sold normalized by year](/Supporting%20Files/graphs/Tickets_Sold_Bar_Normal.svg)
+![Bar graph showing cosplay observations by franchise](/Supporting%20Files/graphs/Ren_Faire_Observations_Bar.svg)
 
 &nbsp;&nbsp;We can already see that these don't seem to match up, though interestingly Tickets Sold matches better than Tickets Sold Normalized to the Character Observations bar graph.
 
@@ -145,11 +142,11 @@ Now that the datasets are ready, I can start doing the comparisons to see if the
 &nbsp;&nbsp;Additionally, we can better see if there's any relationship between these values using scatterplots.
 Here are the scatterplots comparing 'all-time' tickets sold to Ren Faire observations:
 
-![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)  
+![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)
 
 The tickets sold were summed across franchises. The correlation coefficient between these is 0.32.  
 And the same graph, where the tickets sold have been normalized based off all tickets sold that year:   
-![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg)  
+![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg).
 The normalization values were summed across franchises. The correlation coefficient between these is 0.62.  
 
 ## Conclusions
@@ -157,4 +154,4 @@ The normalization values were summed across franchises. The correlation coeffici
 
 &nbsp;&nbsp;Ultimately, the ability to predict what people cosplay as is still limited by assumptions made when [choosing and collecting the data](#The-Data) and in [limiting the dataset overall](#Justification-behind-Limiting-the-Dataset-by-Franchise)
 
-
+[e]Need to find opportunity to include last- year data
