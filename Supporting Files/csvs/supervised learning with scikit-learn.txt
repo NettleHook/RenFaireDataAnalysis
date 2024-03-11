@@ -1,0 +1,68 @@
+Supervised Learning with scikit-learn
+
+Machine learning with scikit-learn
+machine learning is process by which computers learn to make decisions from data without being explicitly programmed
+
+unsupervised learning is the process of uncovering hidden patterns and structures from unlabeled data
+	-ex grouping customers based on past purchasing behavior without knowing in advance what the groups will or should be
+		-aka clustering
+with supervised learning you already know the values to be predicted. The model is built with the aim of predicting where previously unseen data/instances will be grouped.
+	-uses features to predict value of a target variable
+types of supervised learning:
+	classification
+		-predict label or category of an observation
+	regression
+		-predict continuous values
+features can also be called predictor variables and independent variables
+Before beginning with supervised learning:
+-data may not be missing
+-data must be in numeric format
+-data must be stored in pandas DataFrames, pandas Series, or NumPy array
+
+sci-kit learn follows same syntax for all supervised learning models, to ensure repeatable workflow
+	1.Import a model (algorithm used for the supervised learning problem)
+		-could be something like k-Nearest Neighbors
+		from sklearn.module import Model
+	2.Instantiate our model
+		model = Model()
+	3.model is fit to the data, and taught patterns about features and target variable
+		model.fit(X, y)
+	4.Use model.predict() method to predict/test
+		predictions = model.predict(X_new)
+
+classification challenge
+how to build a classification model:
+	1.build classifier
+	2.Fit to labeled data
+	3.pass unlabeled data as input
+	4.predict labels
+k-Nearest Neighbors:
+	-popular for classification
+	-tries to predict label of a data point by looking at the k nearest datapoints and having them 'vote' on what label the unlabeled obs should have
+		-basically, groups datapoint based on grouping of majority of neighbors
+Implementing:
+from sklearn.neighbors import KNeighborsClassifier
+xcols = list of explanatory values/features to use
+X = obs_df[xcols].values
+y = df['result_var'].values
+model = KNeighborsClassifier(n_neighbors=?)
+model.fit(X, y)
+
+Meausuring model performance
+-accuracy is a great metric
+	-correct predictions/total observations or TP/(FN+TP)
+we want to split original dataset into a training and testing set
+	-train on the training set
+	-pretend testing set is unlabelled, and run through our classifier
+	-compare predicted values for the ''unlabelled'' testing set to the actual values
+		-boom, data sources for accuracy function
+	-test set usually consists of 20-30% of the original dataset
+		-can use train_test_splot(X, y, test_size=0.25, random_state = seed, stratify = y) from sklearn.model_selection
+			-we want potential outcomes to be proportionally represented in our dataset, so we can set stratify parameter equal to y
+			-returns 4 arrays: train data, test data,  train labels, test labels
+	-knn has a score method that takes the test data arrays and returns accuracy:
+		knn.score(X_test, y_test)
+k:
+-larger k results in a less complex model, which can cause underfitting
+-smaller k results in a more complex model that gives individual observations a lot of weight, which can lead to overfitting
+

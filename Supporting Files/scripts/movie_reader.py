@@ -20,48 +20,67 @@ def plot_scatter(data_frame, x_val, y_val, labels, name):
     plt.savefig('../graphs/'+name+'.svg')
     print(corrcoef(data_frame[x_val], data_frame[y_val]))
 
-#Now we're using self-gathered data
+def moviesandticks(movies, tickets):
+    #merge movies and tickets
+    movies['Year'] = movies['release_date'].dt.year
+    #one-to-many merge. Should end up with same number of rows as movies database
+    moviesntics = movies.merge(tickets, on='Year')
+    assert moviesntics.shape[0] == movies.shape[0]
+    #Now we need to find tickets sold per movie
+    moviesntics['Tickets Sold by Movie_opening'] = (moviesntics['opening_box_office']/moviesntics['Average Ticket Price']).astype('int')
+    moviesntics['Tickets Sold by Movie_domestic'] = (moviesntics['domestic_box_office']/moviesntics['Average Ticket Price']).astype('int')
+    #now get normalization data
+    moviesntics['normal_tics_domestic'] = moviesntics['Tickets Sold by Movie_domestic']/moviesntics['Tickets Sold']
+    return moviesntics
+
+def franchisecounts(movies, observations):
+    #Now I want to compare franchise counts in scatterplots
+    franchise_counts = pd.DataFrame()
+    franchise_counts['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
+    franchise_counts['Tickets Sold Domestically'] = movies.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
+    franchise_counts['Tickets Sold Domestically Normalized'] = movies.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
+    franchise_counts['Ren Faire Observations'] = observations['Media Source'].value_counts(sort=False).values
+    return franchise_counts
+
+#Import data
 #data types: title:str, release_date:datetime, opening_box_office: int, domestic_box_office: int, franchise: category
 movies = pd.read_csv('../csvs/movies.csv', parse_dates=['release_date'], dtype={'franchise':'category'})
+movies = movies.sort_values(by='release_date')
 
-#data types: Year:int, Tickets Sold: int, Total Inflation Adjusted Box Office: int, Average Ticket Price: Float
+#dxata types: Year:int, Tickets Sold: int, Total Inflation Adjusted Box Office: int, Average Ticket Price: Float
 tickets = pd.read_csv('../csvs/tickets_final.csv', parse_dates = ['Year'])
 tickets['Year'] = tickets['Year'].dt.year
 
-movies = movies.sort_values(by='release_date')
+#get last year data
+ly_movies = pd.read_csv('../csvs/2022-2023movies.csv', parse_dates=['release_date'])
+ly_movies = ly_movies.sort_values(by='release_date')
+
 #create franchise category type, order so our graphs are always in the same order
 franchise_type = pd.CategoricalDtype(['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars'], ordered = True)
 movies['franchise'] = movies['franchise'].astype(franchise_type)
-
-#print category counts
 print(movies['franchise'].value_counts())
+ly_movies['franchise'] = ly_movies['franchise'].astype(franchise_type)
+print(ly_movies['franchise'].value_counts())
 
-#merge movies and tickets so we have all dates in one dataframe
-movies['Year'] = movies['release_date'].dt.year
-#one-to-many merge. Should end up with same number of rows as movies database
-moviesntics = movies.merge(tickets, on='Year')
-assert moviesntics.shape[0] == movies.shape[0]
-#Now we need to find tickets sold per movie
-moviesntics['Tickets Sold by Movie_opening'] = (moviesntics['opening_box_office']/moviesntics['Average Ticket Price']).astype('int')
-moviesntics['Tickets Sold by Movie_domestic'] = (moviesntics['domestic_box_office']/moviesntics['Average Ticket Price']).astype('int')
+all_movies_tics = moviesandticks(movies, tickets)
+ly_movies_tics = moviesandticks(ly_movies, tickets)
 
 #Now, the dataset for the observations
 observations = pd.read_csv('../csvs/RenFaireObservations.csv')
 observations_filtered = observations[observations['Media Source'].isin(['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars'])]
 #set Media Source col to franchise_type so all graphs have the same order
-observations_filtered.loc[:,'Media Source'] = observations_filtered['Media Source'].astype(franchise_type)#FIXME: This line is throwing a warning
-
-#now get normalization data
-moviesntics['normal_tics_domestic'] = moviesntics['Tickets Sold by Movie_domestic']/moviesntics['Tickets Sold']
+observations_filtered.loc[:,'Media Source'] = observations_filtered['Media Source'].astype(franchise_type)
 
 #set graph customizations
 sns.set( rc = {'figure.figsize' : (15, 15)})
 sns.set_style('white')
 sns.set_palette(sns.color_palette('husl',5))
+
 #Plot normalized data and sum of tickets sold, visual comparison against counts at renaissance fair
-    
-plot_bar(moviesntics, 'franchise', 'Tickets Sold by Movie_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly'], 'Tickets_Sold_Bar')
-plot_bar(moviesntics, 'franchise', 'normal_tics_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly, Normalized'], 'Tickets_Sold_Bar_Normal')
+plot_bar(all_movies_tics, 'franchise', 'Tickets Sold by Movie_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly'], 'Tickets_Sold_Bar')
+plot_bar(all_movies_tics, 'franchise', 'normal_tics_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly, Normalized'], 'Tickets_Sold_Bar_Normal')
+plot_bar(ly_movies_tics, 'franchise', 'Tickets Sold by Movie_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly, 2022-2023'], 'Tickets_Sold_Bar_2022-2023')
+plot_bar(ly_movies_tics, 'franchise', 'normal_tics_domestic', ['Franchise', 'Tickets Sold', 'Tickets Sold Domesticly, Normalized, 2022-2023'], 'Tickets_Sold_Bar_Normal_2022-2023')
 
 g = sns.catplot(data=observations_filtered, x='Media Source', kind='count', hue = 'Media Source')
 g.fig.suptitle('Character Observations')
@@ -70,20 +89,41 @@ g.set_axis_labels('Franchise','Observation Count')
 plt.savefig('../graphs/Ren_Faire_Observations_Bar.svg')
 plt.clf()
 
-#Then, get 2022-2023 data
+print(ly_movies_tics.columns)
 
-#Now I want to compare franchise counts in scatterplots
-franchise_counts = pd.DataFrame()
-franchise_counts['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
-franchise_counts['Tickets Sold Domestically'] = moviesntics.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
-franchise_counts['Tickets Sold Domestically Normalized'] = moviesntics.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
-franchise_counts['Ren Faire Observations'] = observations_filtered['Media Source'].value_counts(sort=False).values
-print(franchise_counts)
+franchise_counts_all = pd.DataFrame()
+franchise_counts_all['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
+franchise_counts_all['Tickets Sold Domestically'] = all_movies_tics.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
+franchise_counts_all['Tickets Sold Domestically Normalized'] = all_movies_tics.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
+franchise_counts_all['Ren Faire Observations'] = observations_filtered['Media Source'].value_counts(sort=False).values
+print(franchise_counts_all)
 
-#Now do scatterplots
+franchise_counts_ly = pd.DataFrame()
+franchise_counts_ly['franchise'] = ['DC', 'Disney', 'Marvel']
+franchise_counts_ly['Tickets Sold Domestically'] = ly_movies_tics.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
+franchise_counts_ly['Tickets Sold Domestically Normalized'] = ly_movies_tics.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
+franchise_counts_ly['Ren Faire Observations'] = observations_filtered[observations_filtered['Media Source'].isin(['DC', 'Disney', 'Marvel'])]['Media Source'].value_counts(sort=False).values
+print(franchise_counts_ly)
+print(ly_movies_tics['franchise'].value_counts(sort=False).values )
+franchise_counts_ly['Last Year Movie Release Counts'] = ly_movies_tics['franchise'].value_counts(sort=False).values[[0,1,3]]
+print(franchise_counts_ly)
+
+#Now do final comparisons
 #instances in last year vs instances at ren faire
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Last Year Movie Release Counts', ['Renaissance Faire Observations', 'Movies Released per Franchise', 'Last Year Movie Release Counts vs Ren Faire Observations'], '22-23_Release_counts_vs_RFObs')
+#[[ 1. nan][nan nan]], std=0 as there's no change in y
+
 #tickets sold last year vs instances at ren faire
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically(2022-2023) vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs(2022-2023)')
+#[[ 1.         -0.05317004][-0.05317004  1.        ]]
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized, in 2022-2023) vs\n Ren Faire Observations (2023)'],\
+             'Tickets_Sold_Norm_vs_RFObs(2022-2023)')
+#[[ 1.         -0.06006313][-0.06006313  1.        ]]
+
 #tickets sold all time vs instances at ren faire
-plot_scatter(franchise_counts, 'Ren Faire Observations', 'Tickets Sold Domestically', ['','Tickets Sold total', 'Tickets Sold Domestically vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs')
-plot_scatter(franchise_counts, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023)'],\
+plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs')
+#[[1.         0.32733874][0.32733874 1.        ]]
+
+plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023)'],\
              'Tickets_Sold_Norm_vs_RFObs')
+#[[1.         0.61717422][0.61717422 1.        ]]

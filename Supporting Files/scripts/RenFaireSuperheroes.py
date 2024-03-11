@@ -45,7 +45,7 @@ obs_df = pd.DataFrame({'Characters':observed,
                        'Media Source': media_src,
                        'Gender':gender,
                        'Year':year})
-
+obs_df['Media Source'] = obs_df['Media Source'].astype(pd.CategoricalDtype(['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars'], ordered = True))
 plt.figure(figsize=(12, 8))
 sns.set_palette(sns.color_palette('husl',10))
 sns.set_context('paper')
