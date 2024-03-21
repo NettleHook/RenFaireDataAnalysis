@@ -69,7 +69,8 @@ ly_movies_tics = moviesandticks(ly_movies, tickets)
 observations = pd.read_csv('../csvs/RenFaireObservations.csv')
 observations_filtered = observations[observations['Media Source'].isin(['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars'])]
 #set Media Source col to franchise_type so all graphs have the same order
-observations_filtered.loc[:,'Media Source'] = observations_filtered['Media Source'].astype(franchise_type)
+observations_filtered['Media Source'] = observations_filtered['Media Source'].astype(franchise_type)
+print(observations_filtered['Media Source'].value_counts(sort = False))
 
 #set graph customizations
 sns.set( rc = {'figure.figsize' : (15, 15)})
@@ -89,41 +90,42 @@ g.set_axis_labels('Franchise','Observation Count')
 plt.savefig('../graphs/Ren_Faire_Observations_Bar.svg')
 plt.clf()
 
-print(ly_movies_tics.columns)
-
 franchise_counts_all = pd.DataFrame()
 franchise_counts_all['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
 franchise_counts_all['Tickets Sold Domestically'] = all_movies_tics.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
 franchise_counts_all['Tickets Sold Domestically Normalized'] = all_movies_tics.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
 franchise_counts_all['Ren Faire Observations'] = observations_filtered['Media Source'].value_counts(sort=False).values
-print(franchise_counts_all)
+#print(franchise_counts_all)
 
+print('Making franchise counts dataframe for last year\'s data')
 franchise_counts_ly = pd.DataFrame()
-franchise_counts_ly['franchise'] = ['DC', 'Disney', 'Marvel']
-franchise_counts_ly['Tickets Sold Domestically'] = ly_movies_tics.groupby('franchise', observed=True)['Tickets Sold by Movie_domestic'].sum().values
-franchise_counts_ly['Tickets Sold Domestically Normalized'] = ly_movies_tics.groupby('franchise', observed=True)['normal_tics_domestic'].sum().values
-franchise_counts_ly['Ren Faire Observations'] = observations_filtered[observations_filtered['Media Source'].isin(['DC', 'Disney', 'Marvel'])]['Media Source'].value_counts(sort=False).values
-print(franchise_counts_ly)
-print(ly_movies_tics['franchise'].value_counts(sort=False).values )
-franchise_counts_ly['Last Year Movie Release Counts'] = ly_movies_tics['franchise'].value_counts(sort=False).values[[0,1,3]]
+franchise_counts_ly['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
+print(ly_movies_tics.groupby('franchise', observed=False)['Tickets Sold by Movie_domestic'].sum())
+franchise_counts_ly['Tickets Sold Domestically'] = ly_movies_tics.groupby('franchise', observed=False)['Tickets Sold by Movie_domestic'].sum().values
+print(ly_movies_tics.groupby('franchise', observed=False)['normal_tics_domestic'].sum())
+franchise_counts_ly['Tickets Sold Domestically Normalized'] = ly_movies_tics.groupby('franchise', observed=False)['normal_tics_domestic'].sum().values
+#print(observations_filtered[observations_filtered['Media Source'].isin(['DC', 'Disney', 'Marvel'])]['Media Source'].value_counts(sort=False))
+#franchise_counts_ly['Ren Faire Observations'] = observations_filtered[observations_filtered['Media Source'].isin(['DC', 'Disney', 'Marvel'])]['Media Source'].value_counts(sort=False).values
+franchise_counts_ly['Ren Faire Observations'] = observations_filtered['Media Source'].value_counts(sort=False).values
+franchise_counts_ly['Last Year Movie Release Counts'] = ly_movies_tics['franchise'].value_counts(sort=False).values
 print(franchise_counts_ly)
 
 #Now do final comparisons
 #instances in last year vs instances at ren faire
 plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Last Year Movie Release Counts', ['Renaissance Faire Observations', 'Movies Released per Franchise', 'Last Year Movie Release Counts vs Ren Faire Observations'], '22-23_Release_counts_vs_RFObs')
-#[[ 1. nan][nan nan]], std=0 as there's no change in y
+#[[ 1. 0.855955][0.855955  1.        ]]
 
 #tickets sold last year vs instances at ren faire
 plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically(2022-2023) vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs(2022-2023)')
-#[[ 1.         -0.05317004][-0.05317004  1.        ]]
+#[[ 1.         0.32403274][0.32403274  1.        ]]
 plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized, in 2022-2023) vs\n Ren Faire Observations (2023)'],\
              'Tickets_Sold_Norm_vs_RFObs(2022-2023)')
-#[[ 1.         -0.06006313][-0.06006313  1.        ]]
+#[[ 1.         0.33429642][0.33429642  1.        ]]
 
 #tickets sold all time vs instances at ren faire
 plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs')
-#[[1.         0.32733874][0.32733874 1.        ]]
+#[[1.         -0.47053704][-0.47053704 1.        ]]
 
 plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023)'],\
              'Tickets_Sold_Norm_vs_RFObs')
-#[[1.         0.61717422][0.61717422 1.        ]]
+#[[1.         -0.4731117][-0.4731117 1.        ]]
