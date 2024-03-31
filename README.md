@@ -26,9 +26,11 @@ Focusing on specific Disney movies, DC, Marvel, Star Wars, Lord of the Rings mov
 #### Results for Project 1
 
 ![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg)
+
 The tickets sold were summed across franchises. The correlation coefficient between these is -0.47.  
 
 ![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)
+
 The normalization values were summed across franchises. The correlation coefficient between these is -0.47.  
 
 #### Conclusion for Project 1
@@ -43,17 +45,20 @@ We see that there really isn't a strong relationship between domestic box office
 
 #### Process for Project 2
 
-Collecting data from all movie releases in 2022 and 2023, we then cleaned and filtered to only include movies that were released in theaters between September 1, 2022 and September 30, 2023. Then we merge datasets to make sure we're only keeping movies from 2022 and 2023 that are in the franchises we are looking at (DC, Disney, Marvel, Star Wars, and Lord of the Rings). Now we do a similar analysis that we did in Project 1 with the all-time movie data, where we use the tickets dataset to get the tickets sold per movie and normalize it before comparing to the Renaissance Faire observations. We also compared the number of releases per franchise in this time frame to the Renaissance Faire observations, to see if a franchise having more releases meant it was likelier to have more people cosplaying from it.
+Collecting data from all movie releases in 2022 and 2023, we then cleaned and filtered to only include movies that were released in theaters between September 1, 2022 and September 30, 2023. Then we merge datasets to make sure we're only keeping movies from the franchises we are looking at (DC, Disney, Marvel, Star Wars, and Lord of the Rings). Now we do a similar analysis that we did in Project 1 with the all-time movie data. We use the tickets dataset to get the tickets sold per movie and normalize it before comparing to the Renaissance Faire observations. We also compared the number of releases per franchise in this time frame to the Renaissance Faire observations, to see if a franchise having more releases meant it was likelier to have more people cosplaying from it.
 
 #### Results for Project 2
 
 ![Scatter plot comparing number of releases per franchise in 2022-2023 to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/22-23_Release_counts_vs_RFObs.svg)
+
 The correlation coefficient is 0.86.
 
 ![Scatter plot comparing tickets sold domestically in 2022-2023, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs(2022-2023).svg)
+
 The correlation coefficient is 0.32.
 
 ![Scatter plot comparing tickets sold domestically in 2022-2023 to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs(2022-2023).svg)
+
 The correlation coefficient is 0.33.  
 
 #### Conclusion for Project 2
@@ -199,44 +204,49 @@ Now that the datasets are ready, I can start doing the comparisons to see if the
 ## Results
 
 I made bar graphs of the general data distributions, so we could examine visually if they seem to compare.
+
 ![Bar graph indicating tickets sold across franchises](/Supporting%20Files/graphs/Tickets_Sold_Bar.svg)  
 ![Bar graph indicating tickets sold across franchises, with tickets sold normalized by year](/Supporting%20Files/graphs/Tickets_Sold_Bar_Normal.svg)  
 ![Bar graph indicating tickets sold across franchises, for September 2022- September 2023](/Supporting%20Files/graphs/Tickets_Sold_Bar_2022-2023.svg)  
-![Bar graph indicating tickets sold across franchises, with tickets sold normalized by year, for September 2022- September 2023](/Supporting%20Files/graphs/Tickets_Sold_Bar_Normal_2022-2023.svg)  
+![Bar graph indicating tickets sold across franchises, with tickets sold normalized by year, for September 2022- September 2023](/Supporting%20Files/graphs/Tickets_Sold_Bar_Normal_2022-2023.svg)
+
 ![Bar graph showing cosplay observations by franchise](/Supporting%20Files/graphs/Ren_Faire_Observations_Bar.svg)  
 
-We can already see that these don't seem to match up, though interestingly Tickets Sold for all movies matches better than Tickets Sold Normalized for all movies to the Character Observations bar graph.
-
-For the September 2022-2023 data, The two graphs look pretty similar. Neither appear to be similar to the Renaissance Faire Observations for this same year
+We can already see that these don't seem to match up, though interestingly Tickets Sold for all movies matches better than Tickets Sold Normalized for all movies to the Character Observations bar graph. Both of the graphs showing the data gathered from the 2022-2023 period we're looking at at least maintained the 3 columns that we saw the most cosplays from. This implies we might at least be able to predict the most popular franchises to cosplay from based on the past year data.
 
 That being said, this is just an initial look at the tickets sold data and how it compares to our observations at the 2023 faire.
 
 We can better see if there's any relationship between these values using scatterplots.
 Here are the scatterplots comparing 'all-time' tickets sold to Ren Faire observations:
 
-![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg).
+![Scatter plot comparing tickets sold domestically, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs.svg)
 
-The tickets sold were summed across franchises. The correlation coefficient between these is -0.47.  
-And the same graph, where the tickets sold have been normalized based off all tickets sold that year:
+The tickets sold were summed across franchises. We can see that there isn't much correlation here. Calculating the correlation coefficient gives us -0.47, which confirms that the correlation is weak.
 
-![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg).
-The normalization values were summed across franchises. The correlation coefficient between these is -0.47.
+Here is the same data, where the tickets sold have been normalized based off all tickets sold that year:
+
+![Scatter plot comparing tickets sold domestically to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs.svg)
+
+The normalization values were summed across franchises. Again, there isn't a strong correlation between the two parameters. The correlation coefficient between these is -0.47. Looking at this graph does make us wonder if we should drop Lord of the Rings, with the justification that it's the only franchise not releasing new movies.
+
+If we did drop Lord of the Rings, we do have an interesting pattern where it seems instead that the less money a franchise draws the more costumes we see from it. This does imply that there is an appeal of "nicher" interests to the cosplay community. (Niche not exactly being used properly-- these are all quite popular). Calculating the correlation coefficient gives -0.97, which confirms the suspicion.
 
 I also compared the Renaissance Faire Observations to just the last year's data.
 First, I compared Renaissance Faire instances against the number of releases per franchise:  
 ![Scatter plot comparing number of releases per franchise in 2022-2023 to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/22-23_Release_counts_vs_RFObs.svg)  
-Due to the uniform distribution of the observations, we could not calculate the correlation coefficient. In any case, the relationship between these is as good as random.  
-Next I did the same comparisons as with the all-time movie data.  
+The correlation coefficient is 0.86. It's possible we might be able to tell which are going to be the most popular franchises to cosplay from based on the releases from the past year, especially given the high correlation coefficient. Our data is limited, given we only have one year of observations though.  
+After this, I did the same comparisons as with the all-time movie data.  
 Here is the 2022-2023 tickets sold by franchise compared to the Renaissance Faire Observations:
 ![Scatter plot comparing tickets sold domestically in 2022-2023, normalized by year, to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_vs_RFObs(2022-2023).svg)  
 The correlation coefficient is 0.32.  
 And the same graph with the tickets sold normalized by year:  
 ![Scatter plot comparing tickets sold domestically in 2022-2023 to cosplay observations at the renaissance faire](/Supporting%20Files/graphs/Tickets_Sold_Norm_vs_RFObs(2022-2023).svg)  
 The correlation coefficient is 0.33.  
+Both of these two graphs imply that the past year's box office success doesn't have much weight on what people choose to cosplay from
 
 ## Conclusions
 
-From all-time data, we can't seem to predict the likelihood of cosplaying from a franchise from the tickets sold across all-time, whether we normalize or not. This is a bit of a surprise, as I expected the normalized data to have a noticeably stronger relationship due to the fact that it accounts for the effects of various phenomena such as Covid-19 and economic recessions on theater ticket sales.
+From all-time data, we can't seem to predict the likelihood of cosplaying from a franchise from the tickets sold across all-time, whether we normalize or not. This is a bit of a surprise, as I expected the normalized data to have a noticeably stronger relationship due to the fact that it accounts for the effects of various phenomena such as Covid-19 and economic recessions on theater ticket sales. There was that curious phenomena that we saw when we dropped Lord of the Rings from our consideration, and did see a negative correlation between all time box office success normalized for tickets sold each year compared to the Renaissance Faire cosplays.
 
 Our ability to predict from last year's data isn't much better. The box office success of recent movie releases doesn't seem to have a strong relationship with instances of people cosplaying at the renaissance faire. Interestingly, whether or not there were movie releases does appear to have a much stronger relationship with the other factors considered, implying that recent exposure would be a better predictor for what people are likely to cosplay as at the Renaissance Faire
 

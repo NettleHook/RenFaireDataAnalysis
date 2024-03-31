@@ -5,6 +5,17 @@ from numpy import corrcoef
 
 #plotting functions, so I don't have to re-type the code so many times
 def plot_bar(data_frame, x_val, y_val, labels, name):
+    """
+    Plots a bar graph of the x and y columns of the dataframe and saves it to a file
+
+    Parameters:
+        data_frame (pandas DataFrame): data we'll be plotting
+        x_val (string): name of x column for our graph
+        y_val (string): name of y column for our graph
+        labels (list): list of labels in the form [x-axis label, y-axis label, title]
+        name (string): filename we're saving the file under
+
+    """
     g = sns.catplot(data=data_frame, x=x_val, y=y_val, kind='bar', estimator='sum', errorbar=None, hue = 'franchise')
     g.fig.suptitle(labels[2])
     g.fig.subplots_adjust(top = 0.9)
@@ -13,6 +24,17 @@ def plot_bar(data_frame, x_val, y_val, labels, name):
     plt.clf()
     
 def plot_scatter(data_frame, x_val, y_val, labels, name):
+    """
+    Plots a scatter graph of the x and y columns of the dataframe and saves it to a file
+
+    Parameters:
+        data_frame (pandas DataFrame): data we'll be plotting
+        x_val (string): name of x column for our graph
+        y_val (string): name of y column for our graph
+        labels (list): list of labels in the form [x-axis label, y-axis label, title]
+        name (string): filename we're saving the file under
+
+    """
     g = sns.relplot(data = data_frame, x=x_val, y=y_val, kind='scatter', hue = 'franchise')
     g.fig.suptitle(labels[2])
     g.fig.subplots_adjust(top = 0.9) 
@@ -21,6 +43,14 @@ def plot_scatter(data_frame, x_val, y_val, labels, name):
     print(corrcoef(data_frame[x_val], data_frame[y_val]))
 
 def moviesandticks(movies, tickets):
+    """
+    Merges a movies dataset with a tickets dataset, and adds columns for the tickets sold per movie data
+
+    Parameters:
+        movies (pandas DataFrame): dataframe with the movie data
+        tickets (pandas DataFrame): dataframe with the tickets data
+    
+    """
     #merge movies and tickets
     movies['Year'] = movies['release_date'].dt.year
     #one-to-many merge. Should end up with same number of rows as movies database
@@ -34,6 +64,14 @@ def moviesandticks(movies, tickets):
     return moviesntics
 
 def franchisecounts(movies, observations):
+    """
+    Merges a movies dataset with our Renaissance Faire Observations, grouping by franchise
+
+    Parameters:
+        movies (pandas DataFrame): dataframe with the movie data
+        observations (pandas DataFrame): dataframe with the renaissance faire observation data
+    
+    """
     #Now I want to compare franchise counts in scatterplots
     franchise_counts = pd.DataFrame()
     franchise_counts['franchise'] = ['DC', 'Disney', 'LOTR', 'Marvel', 'Star Wars']
@@ -112,20 +150,30 @@ print(franchise_counts_ly)
 
 #Now do final comparisons
 #instances in last year vs instances at ren faire
-plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Last Year Movie Release Counts', ['Renaissance Faire Observations', 'Movies Released per Franchise', 'Last Year Movie Release Counts vs Ren Faire Observations'], '22-23_Release_counts_vs_RFObs')
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Last Year Movie Release Counts',\
+             ['Renaissance Faire Observations', 'Movies Released per Franchise', 'Last Year Movie Release Counts vs Ren Faire Observations'], '22-23_Release_counts_vs_RFObs')
 #[[ 1. 0.855955][0.855955  1.        ]]
 
 #tickets sold last year vs instances at ren faire
-plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically(2022-2023) vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs(2022-2023)')
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically',\
+             ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically(2022-2023) vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs(2022-2023)')
 #[[ 1.         0.32403274][0.32403274  1.        ]]
-plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized, in 2022-2023) vs\n Ren Faire Observations (2023)'],\
+plot_scatter(franchise_counts_ly, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized',
+             ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized, in 2022-2023) vs\n Ren Faire Observations (2023)'],\
              'Tickets_Sold_Norm_vs_RFObs(2022-2023)')
 #[[ 1.         0.33429642][0.33429642  1.        ]]
 
 #tickets sold all time vs instances at ren faire
-plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically', ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs')
+plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically',\
+             ['Renaissance Faire Observations','Tickets Sold total', 'Tickets Sold Domestically vs\n Ren Faire Observations (2023)'], 'Tickets_Sold_vs_RFObs')
 #[[1.         -0.47053704][-0.47053704 1.        ]]
 
-plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized', ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023)'],\
+plot_scatter(franchise_counts_all, 'Ren Faire Observations', 'Tickets Sold Domestically Normalized',\
+             ['Renaissance Faire Observations', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023)'],\
              'Tickets_Sold_Norm_vs_RFObs')
 #[[1.         -0.4731117][-0.4731117 1.        ]]
+#Curious about the previous graph, without the Lord of the Rings data:
+plot_scatter(franchise_counts_all[franchise_counts_all['franchise'].isin(['DC','Disney', 'Marvel', 'Star Wars'])], 'Ren Faire Observations', 'Tickets Sold Domestically Normalized',\
+             ['Renaissance Faire Observations (Modified)', 'Tickets Sold (normalized per year)', 'Tickets Sold Domestically (Normalized) vs\n Ren Faire Observations (2023, modified list)'],\
+             'Tickets_Sold_Norm_Modified_vs_RFObs')
+#[[ 1.         -0.96627727][-0.96627727  1.        ]]

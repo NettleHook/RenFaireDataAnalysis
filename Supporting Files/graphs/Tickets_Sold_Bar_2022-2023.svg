@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2024-03-20T17:58:52.313953</dc:date>
+    <dc:date>2024-03-30T22:38:59.116140</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -958,7 +958,7 @@ L 105.907725 311.94
 L 105.907725 236.118744 
 L 58.857525 236.118744 
 z
-" clip-path="url(#p4a867943c5)" style="fill: #e68193; stroke: #ffffff; stroke-linejoin: miter"/>
+" clip-path="url(#p29a64955d5)" style="fill: #e68193; stroke: #ffffff; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
     <path d="M 117.670275 311.94 
@@ -966,7 +966,7 @@ L 164.720475 311.94
 L 164.720475 224.965693 
 L 117.670275 224.965693 
 z
-" clip-path="url(#p4a867943c5)" style="fill: #9e9241; stroke: #ffffff; stroke-linejoin: miter"/>
+" clip-path="url(#p29a64955d5)" style="fill: #9e9241; stroke: #ffffff; stroke-linejoin: miter"/>
    </g>
    <g id="patch_5">
     <path d="M 235.295775 311.94 
@@ -974,7 +974,7 @@ L 282.345975 311.94
 L 282.345975 49.14 
 L 235.295775 49.14 
 z
-" clip-path="url(#p4a867943c5)" style="fill: #4a9eb4; stroke: #ffffff; stroke-linejoin: miter"/>
+" clip-path="url(#p29a64955d5)" style="fill: #4a9eb4; stroke: #ffffff; stroke-linejoin: miter"/>
    </g>
    <g id="patch_6">
     <path d="M 52.97625 311.94 
@@ -1113,7 +1113,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="p4a867943c5">
+  <clipPath id="p29a64955d5">
    <rect x="52.97625" y="36" width="294.06375" height="275.94"/>
   </clipPath>
  </defs>
